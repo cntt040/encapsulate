@@ -2,8 +2,7 @@ package consul
 
 import (
 	"fmt"
-
-	"g.ghn.vn/go-common/dns-encapsulated/encapsulated"
+	"g.ghn.vn/go-common/encapsulate/encapsulated"
 	"github.com/benschw/dns-clb-go/clb"
 	"github.com/labstack/echo"
 	"github.com/yanzay/log"
