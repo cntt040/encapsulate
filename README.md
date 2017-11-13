@@ -11,6 +11,7 @@
 *** Update
     ```
     go get -u all 
+    go get -u g.ghn.vn/go-common/encapsulate
     ```
 *** Example
 
