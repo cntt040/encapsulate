@@ -3,7 +3,7 @@ package consul
 import (
 	"fmt"
 
-	"g.ghn.vn/go-common/encapsulate/encapsulated"
+	"g.ghn.vn/go-common/dns-encapsulated/encapsulated"
 	"github.com/benschw/dns-clb-go/clb"
 	"github.com/labstack/echo"
 	"github.com/yanzay/log"
@@ -44,8 +44,9 @@ func (c *ClientDns) getAddress() (string, error) {
 	return address.String(), nil
 }
 
-func (c *ClientDns) Get(ctx echo.Context, path string, reqBody interface{}, resp interface{}) error {
-	return c.encap.Get(ctx, path, reqBody, reqBody)
+func (c *ClientDns) Get(ctx echo.Context, path string, reqBody interface{}) ([]byte, error) {
+	res, err := c.encap.Get(ctx, path, reqBody)
+	return res, err
 }
 
 func (c *ClientDns) Post(ctx echo.Context, path string, reqBody interface{}, resp interface{}) error {
