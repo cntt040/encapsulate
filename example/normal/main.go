@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http/httptest"
 
 	"github.com/labstack/echo"
@@ -26,7 +27,7 @@ func main() {
 	}
 
 	// GET
-	resp1, err := enscap.GetWithoutJson(c, "/health", nil)
+	resp1, err := enscap.RequestWithoutJson(c, echo.GET, "/health", nil)
 	if err != nil {
 		log.Error(err)
 	}
@@ -34,9 +35,14 @@ func main() {
 
 	//POST
 	var resp2 ClassDemo
-	err = enscap.Post(c, "/health", nil, &resp2)
+	data, err := enscap.Request(c, echo.POST, "/health", nil)
 	if err != nil {
 		log.Error(err)
 	}
+	err = json.Unmarshal(data, &resp2)
+	if err != nil {
+		log.Error(err)
+	}
+
 	log.Info(resp2)
 }

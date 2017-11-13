@@ -29,10 +29,9 @@ func TestGetHealth(t *testing.T) {
 	res := httptest.NewRecorder()
 	c := e.NewContext(req, res)
 
-	resp, err := enscap.GetWithoutJson(c, "/health", nil)
+	resp, err := enscap.RequestWithoutJson(c, echo.GET, "/health", nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp, "true")
 
 }
-

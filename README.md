@@ -35,7 +35,11 @@ Create servive
 
     ```
     var resp2 ClassDemo
-	err = enscap.Post(context.Background(), "/health", nil, &resp2)
+	data, err := enscap.Request(c, echo.POST, "/health", nil)
+	if err != nil {
+		log.Error(err)
+	}
+	err = json.Unmarshal(data, &resp2)
 	if err != nil {
 		log.Error(err)
 	}
