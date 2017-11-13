@@ -1,7 +1,9 @@
 package main
 
 import (
-	"context"
+	"net/http/httptest"
+
+	"github.com/labstack/echo"
 
 	"g.ghn.vn/go-common/dns-encapsulated/encapsulated"
 )
@@ -9,6 +11,11 @@ import (
 var log = encapsulated.GetLogger("Encapsulated Services")
 
 func main() {
+	e := echo.New()
+	req := httptest.NewRequest(echo.GET, "/health", nil)
+	res := httptest.NewRecorder()
+	c := e.NewContext(req, res)
+
 	enscap := encapsulated.DefaultConfig
 	enscap.Debug = false
 	enscap.BaseURI = "http://127.0.0.1:9898"
@@ -19,7 +26,7 @@ func main() {
 	}
 
 	// GET
-	resp1, err := enscap.GetWithoutJson(context.Background(), "/health", nil)
+	resp1, err := enscap.GetWithoutJson(c, "/health", nil)
 	if err != nil {
 		log.Error(err)
 	}
@@ -27,7 +34,7 @@ func main() {
 
 	//POST
 	var resp2 ClassDemo
-	err = enscap.Post(context.Background(), "/health", nil, &resp2)
+	err = enscap.Post(c, "/health", nil, &resp2)
 	if err != nil {
 		log.Error(err)
 	}

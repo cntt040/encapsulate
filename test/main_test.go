@@ -1,11 +1,12 @@
 package test
 
 import (
-	"context"
+	"net/http/httptest"
 	"testing"
 
 	"g.ghn.vn/go-common/dns-encapsulated/encapsulated"
 
+	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,7 +24,12 @@ func init() {
 
 }
 func TestGetHealth(t *testing.T) {
-	resp, err := enscap.GetWithoutJson(context.Background(), "/health", nil)
+	e := echo.New()
+	req := httptest.NewRequest(echo.GET, "/health", nil)
+	res := httptest.NewRecorder()
+	c := e.NewContext(req, res)
+
+	resp, err := enscap.GetWithoutJson(c, "/health", nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp, "true")
