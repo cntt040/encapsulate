@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/labstack/echo"
 )
 
 type EncapsulatedConfig struct {
@@ -27,18 +29,19 @@ func init() {
 	}
 	DefaultConfig = def
 }
-func (c *EncapsulatedConfig) GetWithoutJson(ctx context.Context, path string, reqBody interface{}) (interface{}, error) {
+func (c *EncapsulatedConfig) GetWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {
 	t0 := time.Now()
 	reqData := c.encodeRequest(reqBody)
-	req, err := http.NewRequest("GET", c.BaseURI+path, bytes.NewBuffer(reqData))
+	req, err := http.NewRequest(echo.GET, c.BaseURI+path, bytes.NewBuffer(reqData))
 	if err != nil {
 		log.Panic(err)
 		return nil, WrapError(err, CodeInternal, "Internal error")
 	}
 
-	req = req.WithContext(ctx)
+	//req = req.WithContext(ctx)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("cache-control", "no-cache")
+	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
 	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, WrapError(err, CodeNetWork, "Network error")
