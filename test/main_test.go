@@ -35,3 +35,4 @@ func TestGetHealth(t *testing.T) {
 	assert.Equal(t, resp, "true")
 
 }
+

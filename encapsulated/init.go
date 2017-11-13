@@ -117,9 +117,9 @@ func (c *EncapsulatedConfig) encodeRequest(reqBody interface{}) []byte {
 
 	b = b[:len(b)-2]
 	buf = bytes.NewBuffer(b)
-	if len(b) > 1 {
-		buf.WriteByte(',')
-	}
+	// if len(b) > 1 {
+	// 	buf.WriteByte(',')
+	// }
 	//buf.Write(c.cachedFields[1:])
 	return buf.Bytes()
 }
