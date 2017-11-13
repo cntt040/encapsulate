@@ -19,8 +19,8 @@ type ClassDemo struct {
 
 func init() {
 	enscap = encapsulated.DefaultConfig
-	enscap.Debug = false
-	enscap.BaseURI = "http://127.0.0.1:9898"
+	enscap.Debug = true
+	enscap.BaseURI = "http://10.100.144.150:9898"
 
 }
 func TestGetHealth(t *testing.T) {
