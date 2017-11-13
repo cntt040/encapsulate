@@ -28,45 +28,11 @@ func init() {
 	}
 	DefaultConfig = def
 }
-func (c *EncapsulatedConfig) GetWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {
+
+func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string, path string, reqBody interface{}) (interface{}, error) {
 	t0 := time.Now()
 	reqData := c.encodeRequest(reqBody)
-	req, err := http.NewRequest(echo.GET, c.BaseURI+path, bytes.NewBuffer(reqData))
-	if err != nil {
-		log.Panic(err)
-		return nil, WrapError(err, CodeInternal, "Internal error")
-	}
-
-	//req = req.WithContext(ctx)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("cache-control", "no-cache")
-	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
-	httpResp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, WrapError(err, CodeNetWork, "Network error")
-	}
-
-	data, err := ioutil.ReadAll(httpResp.Body)
-	if err != nil {
-		return nil, WrapError(err, CodeNetWork, "Network error, unable to read body")
-	}
-
-	respData := data
-	if len(respData) > 10000 {
-		respData = respData[:5000]
-	}
-	t1 := time.Now()
-	if c.Debug == true {
-		log.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
-	}
-
-	return string(data), nil
-}
-
-func (c *EncapsulatedConfig) PostWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {
-	t0 := time.Now()
-	reqData := c.encodeRequest(reqBody)
-	req, err := http.NewRequest("POST", c.BaseURI+path, bytes.NewBuffer(reqData))
+	req, err := http.NewRequest(method, c.BaseURI+path, bytes.NewBuffer(reqData))
 	if err != nil {
 		log.Panic(err)
 		return nil, WrapError(err, CodeInternal, "Internal error")

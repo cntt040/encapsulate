@@ -65,11 +65,11 @@ func (c *ClientDns) Put(ctx echo.Context, path string, reqBody interface{}) ([]b
 }
 
 func (c *ClientDns) GetWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {
-	res, err := c.encap.GetWithoutJson(ctx, path, reqBody)
+	res, err := c.encap.RequestWithoutJson(ctx, echo.GET, path, reqBody)
 	return res, err
 }
 
 func (c *ClientDns) PostWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {
-	res, err := c.encap.PostWithoutJson(ctx, path, reqBody)
+	res, err := c.encap.RequestWithoutJson(ctx, echo.POST, path, reqBody)
 	return res, err
 }
