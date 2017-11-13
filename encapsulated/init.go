@@ -115,7 +115,7 @@ func (c *EncapsulatedConfig) encodeRequest(reqBody interface{}) []byte {
 		log.Panic(buf)
 	}
 
-	b = b[:len(b)-2]
+	b = b[:len(b)-1]
 	buf = bytes.NewBuffer(b)
 	// if len(b) > 1 {
 	// 	buf.WriteByte(',')
