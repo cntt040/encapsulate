@@ -178,7 +178,7 @@ func (c *EncapsulatedConfig) Get(ctx echo.Context, path string, reqBody interfac
 		resp = &Error{}
 	}
 
-	err = json.Unmarshal(data, resp)
+	err = json.Unmarshal(data, &resp)
 	if err != nil {
 		return WrapError(err, CodeInternal, "Protocol unmarshal error "+string(respData))
 	}
