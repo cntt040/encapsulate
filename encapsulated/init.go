@@ -2,7 +2,6 @@ package encapsulated
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -64,7 +63,7 @@ func (c *EncapsulatedConfig) GetWithoutJson(ctx echo.Context, path string, reqBo
 	return string(data), nil
 }
 
-func (c *EncapsulatedConfig) PostWithoutJson(ctx context.Context, path string, reqBody interface{}) (interface{}, error) {
+func (c *EncapsulatedConfig) PostWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {
 	t0 := time.Now()
 	reqData := c.encodeRequest(reqBody)
 	req, err := http.NewRequest("POST", c.BaseURI+path, bytes.NewBuffer(reqData))
@@ -73,8 +72,10 @@ func (c *EncapsulatedConfig) PostWithoutJson(ctx context.Context, path string, r
 		return nil, WrapError(err, CodeInternal, "Internal error")
 	}
 
-	req = req.WithContext(ctx)
+	//req = req.WithContext(ctx)
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
 	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, WrapError(err, CodeNetWork, "Network error")
@@ -97,7 +98,7 @@ func (c *EncapsulatedConfig) PostWithoutJson(ctx context.Context, path string, r
 	return string(data), nil
 }
 
-func (c *EncapsulatedConfig) Post(ctx context.Context, path string, reqBody interface{}, resp interface{}) error {
+func (c *EncapsulatedConfig) Post(ctx echo.Context, path string, reqBody interface{}, resp interface{}) error {
 	t0 := time.Now()
 	reqData := c.encodeRequest(reqBody)
 	req, err := http.NewRequest("POST", c.BaseURI+path, bytes.NewBuffer(reqData))
@@ -106,8 +107,10 @@ func (c *EncapsulatedConfig) Post(ctx context.Context, path string, reqBody inte
 		return WrapError(err, CodeInternal, "Internal error")
 	}
 
-	req = req.WithContext(ctx)
+	//req = req.WithContext(ctx)
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
 	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
 		return WrapError(err, CodeNetWork, "Network error")
@@ -138,7 +141,7 @@ func (c *EncapsulatedConfig) Post(ctx context.Context, path string, reqBody inte
 	return nil
 }
 
-func (c *EncapsulatedConfig) Get(ctx context.Context, path string, reqBody interface{}, resp interface{}) error {
+func (c *EncapsulatedConfig) Get(ctx echo.Context, path string, reqBody interface{}, resp interface{}) error {
 	t0 := time.Now()
 	reqData := c.encodeRequest(reqBody)
 	req, err := http.NewRequest("GET", c.BaseURI+path, bytes.NewBuffer(reqData))
@@ -147,8 +150,10 @@ func (c *EncapsulatedConfig) Get(ctx context.Context, path string, reqBody inter
 		return WrapError(err, CodeInternal, "Internal error")
 	}
 
-	req = req.WithContext(ctx)
+	//req = req.WithContext(ctx)
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
 	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
 		return WrapError(err, CodeNetWork, "Network error")

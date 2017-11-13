@@ -8,6 +8,10 @@
     go test ./test/...
     ```
 
+*** Update
+    ```
+    go get -u all 
+    ```
 *** Example
 
 Create servive 
