@@ -2,6 +2,7 @@ package consul
 
 import (
 	"fmt"
+
 	"g.ghn.vn/go-common/encapsulate/encapsulated"
 	"github.com/benschw/dns-clb-go/clb"
 	"github.com/labstack/echo"
@@ -44,12 +45,23 @@ func (c *ClientDns) getAddress() (string, error) {
 }
 
 func (c *ClientDns) Get(ctx echo.Context, path string, reqBody interface{}) ([]byte, error) {
-	res, err := c.encap.Get(ctx, path, reqBody)
+	res, err := c.encap.Request(ctx, echo.GET, path, reqBody)
 	return res, err
 }
 
-func (c *ClientDns) Post(ctx echo.Context, path string, reqBody interface{}, resp interface{}) error {
-	return c.encap.Post(ctx, path, reqBody, reqBody)
+func (c *ClientDns) Post(ctx echo.Context, path string, reqBody interface{}) ([]byte, error) {
+	res, err := c.encap.Request(ctx, echo.POST, path, reqBody)
+	return res, err
+}
+
+func (c *ClientDns) Delete(ctx echo.Context, path string, reqBody interface{}) ([]byte, error) {
+	res, err := c.encap.Request(ctx, echo.DELETE, path, reqBody)
+	return res, err
+}
+
+func (c *ClientDns) Put(ctx echo.Context, path string, reqBody interface{}) ([]byte, error) {
+	res, err := c.encap.Request(ctx, echo.PUT, path, reqBody)
+	return res, err
 }
 
 func (c *ClientDns) GetWithoutJson(ctx echo.Context, path string, reqBody interface{}) (interface{}, error) {

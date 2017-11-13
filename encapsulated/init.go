@@ -98,59 +98,15 @@ func (c *EncapsulatedConfig) PostWithoutJson(ctx echo.Context, path string, reqB
 	return string(data), nil
 }
 
-func (c *EncapsulatedConfig) Post(ctx echo.Context, path string, reqBody interface{}, resp interface{}) error {
+func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path string, reqBody interface{}) ([]byte, error) {
 	t0 := time.Now()
 	reqData := c.encodeRequest(reqBody)
-	req, err := http.NewRequest("POST", c.BaseURI+path, bytes.NewBuffer(reqData))
-	if err != nil {
-		log.Panic(err)
-		return WrapError(err, CodeInternal, "Internal error")
-	}
-
-	//req = req.WithContext(ctx)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("cache-control", "no-cache")
-	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
-	httpResp, err := c.httpClient.Do(req)
-	if err != nil {
-		return WrapError(err, CodeNetWork, "Network error")
-	}
-
-	data, err := ioutil.ReadAll(httpResp.Body)
-	if err != nil {
-		return WrapError(err, CodeNetWork, "Network error, unable to read body")
-	}
-
-	respData := data
-	if len(respData) > 10000 {
-		respData = respData[:5000]
-	}
-	t1 := time.Now()
-	if c.Debug == true {
-		log.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
-	}
-
-	if resp == nil {
-		resp = &Error{}
-	}
-	err = json.Unmarshal(data, resp)
-	if err != nil {
-		return WrapError(err, CodeInternal, "Protocol unmarshal error "+string(respData))
-	}
-
-	return nil
-}
-
-func (c *EncapsulatedConfig) Get(ctx echo.Context, path string, reqBody interface{}) ([]byte, error) {
-	t0 := time.Now()
-	reqData := c.encodeRequest(reqBody)
-	req, err := http.NewRequest("GET", c.BaseURI+path, bytes.NewBuffer(reqData))
+	req, err := http.NewRequest(method, c.BaseURI+path, bytes.NewBuffer(reqData))
 	if err != nil {
 		log.Panic(err)
 		return nil, WrapError(err, CodeInternal, "Internal error")
 	}
 
-	//req = req.WithContext(ctx)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("cache-control", "no-cache")
 	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
@@ -174,16 +130,6 @@ func (c *EncapsulatedConfig) Get(ctx echo.Context, path string, reqBody interfac
 		log.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
 
-	// if resp == nil {
-	// 	resp = &Error{}
-	// }
-
-	// err = json.Unmarshal(data, resp)
-	// if err != nil {
-	// 	return WrapError(err, CodeInternal, "Protocol unmarshal error "+string(respData))
-	// }
-
-	// return nil
 	return data, nil
 }
 
