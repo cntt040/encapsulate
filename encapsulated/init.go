@@ -58,7 +58,7 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		log.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+		log.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
 
 	return string(data), nil
