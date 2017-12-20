@@ -19,7 +19,7 @@ type EncapsulatedConfig struct {
 
 var DefaultConfig *EncapsulatedConfig
 
-var logger = GetLoggerHTTP("Encapsulated Services")
+var logger = GetLoggerHTTP("Encapsulated Services ")
 
 func init() {
 	def := &EncapsulatedConfig{
