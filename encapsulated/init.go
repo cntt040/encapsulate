@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
 )
 
 type EncapsulatedConfig struct {
@@ -36,7 +35,7 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	reqData := c.encodeRequest(reqBody)
 	req, err := http.NewRequest(method, c.BaseURI+path, bytes.NewBuffer(reqData))
 	if err != nil {
-		log.Panic(err)
+		logger.Panic(err)
 		return nil, WrapError(err, CodeInternal, "Internal error")
 	}
 
@@ -60,7 +59,7 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		log.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
+		logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
 	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
 		var resErr *Error
@@ -78,7 +77,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	reqData := c.encodeRequest(reqBody)
 	req, err := http.NewRequest(method, c.BaseURI+path, bytes.NewBuffer(reqData))
 	if err != nil {
-		log.Panic(err)
+		logger.Panic(err)
 		return nil, WrapError(err, CodeInternal, "Internal error")
 	}
 
@@ -102,7 +101,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		log.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
 	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
 		var resErr *Error
@@ -123,12 +122,12 @@ func (c *EncapsulatedConfig) encodeRequest(reqBody interface{}) []byte {
 
 	err := json.NewEncoder(buf).Encode(reqBody)
 	if err != nil {
-		log.Panic(err)
+		logger.Panic(err)
 	}
 
 	b := buf.Bytes()
 	if len(b) == 0 || b[0] != '{' {
-		log.Panic(buf)
+		logger.Panic(buf)
 	}
 
 	b = b[:len(b)-1]
