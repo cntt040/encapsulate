@@ -96,6 +96,14 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 		return nil, WrapError(err, CodeNetWork, "Network error, unable to read body")
 	}
 
+	respData := data
+	if len(respData) > 10000 {
+		respData = respData[:5000]
+	}
+	t1 := time.Now()
+	if c.Debug == true {
+		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
 		es := json.Unmarshal(data, &resErr)
@@ -106,16 +114,6 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 		fmt.Println("return 2")
 		return nil, WrapErrorf(resErr.Code, resErr.Message)
 	}
-
-	respData := data
-	if len(respData) > 10000 {
-		respData = respData[:5000]
-	}
-	t1 := time.Now()
-	if c.Debug == true {
-		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
-	}
-
 	return data, nil
 }
 
