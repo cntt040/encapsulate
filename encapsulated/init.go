@@ -103,7 +103,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	if c.Debug == true {
 		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
-	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
+	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
 		es := json.Unmarshal(respData, &resErr)
 		if es != nil || resErr == nil {
