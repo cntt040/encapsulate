@@ -3,12 +3,12 @@ package encapsulated
 import "fmt"
 
 const (
-	CodeInternal = 500
-	CodeNetWork  = 598
+	CodeInternal = "500"
+	CodeNetWork  = "598"
 )
 
 type Error struct {
-	Code    int
+	Code    string
 	Message string
 }
 
@@ -21,13 +21,13 @@ func (e Error) GetError() error {
 	if e.Message != "" {
 		return Error{
 			Message: e.Message,
-			Code:    503,
+			Code:    "503",
 		}
 	}
 	return nil
 }
 
-func WrapError(err error, code int, msg string, args ...interface{}) error {
+func WrapError(err error, code string, msg string, args ...interface{}) error {
 	if err, ok := err.(Error); ok {
 		return err
 	}

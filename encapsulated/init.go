@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 )
 
 type EncapsulatedConfig struct {
@@ -60,7 +62,14 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	if c.Debug == true {
 		log.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
-
+	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
+		var resErr *Error
+		es = json.Unmarshal(httpResp, &resErr)
+		if es != nil || resErr == nil {
+			return nil, WrapError(nil, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
+		}
+		return nil, WrapError(nil, resErr.Code, resErr.Message)
+	}
 	return string(data), nil
 }
 
@@ -95,7 +104,14 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	if c.Debug == true {
 		log.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
-
+	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
+		var resErr *Error
+		es = json.Unmarshal(httpResp, &resErr)
+		if es != nil || resErr == nil {
+			return nil, WrapError(nil, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
+		}
+		return nil, WrapError(nil, resErr.Code, resErr.Message)
+	}
 	return data, nil
 }
 
