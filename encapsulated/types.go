@@ -37,6 +37,13 @@ func WrapError(err error, code string, msg string, args ...interface{}) error {
 	}
 }
 
+func WrapErrorf(code string, msg string, args ...interface{}) error {
+	return Error{
+		Code:    code,
+		Message: fmt.Sprintf(msg, args...),
+	}
+}
+
 type Response interface {
 	GetError() error
 }

@@ -104,7 +104,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 			return nil, WrapError(es, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
 		}
 		fmt.Println("return 2")
-		return nil, WrapError(nil, resErr.Code, resErr.Message)
+		return nil, WrapErrorf(resErr.Code, resErr.Message)
 	}
 
 	respData := data
