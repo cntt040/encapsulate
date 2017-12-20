@@ -64,7 +64,7 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	}
 	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
 		var resErr *Error
-		es = json.Unmarshal(httpResp, &resErr)
+		es := json.Unmarshal(respData, &resErr)
 		if es != nil || resErr == nil {
 			return nil, WrapError(nil, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
 		}
@@ -106,7 +106,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	}
 	if httpResp.StatusCode >= 300 && httpResp.StatusCode < 200 {
 		var resErr *Error
-		es = json.Unmarshal(httpResp, &resErr)
+		es := json.Unmarshal(respData, &resErr)
 		if es != nil || resErr == nil {
 			return nil, WrapError(nil, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
 		}
