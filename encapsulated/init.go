@@ -3,7 +3,6 @@ package encapsulated
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -64,11 +63,13 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
-		es := json.Unmarshal(respData, &resErr)
+		es := json.Unmarshal(data, &resErr)
 		if es != nil || resErr == nil {
-			return nil, WrapError(nil, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
+
+			return nil, WrapError(es, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
 		}
-		return nil, WrapError(nil, resErr.Code, resErr.Message)
+
+		return nil, WrapErrorf(resErr.Code, resErr.Message)
 	}
 	return string(data), nil
 }
@@ -108,10 +109,10 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 		var resErr *Error
 		es := json.Unmarshal(data, &resErr)
 		if es != nil || resErr == nil {
-			fmt.Println("return 1")
+
 			return nil, WrapError(es, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
 		}
-		fmt.Println("return 2")
+
 		return nil, WrapErrorf(resErr.Code, resErr.Message)
 	}
 	return data, nil
