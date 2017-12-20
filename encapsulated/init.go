@@ -96,6 +96,17 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 		return nil, WrapError(err, CodeNetWork, "Network error, unable to read body")
 	}
 
+	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
+		var resErr *Error
+		es := json.Unmarshal(data, &resErr)
+		if es != nil || resErr == nil {
+			fmt.Println("return 1")
+			return nil, WrapError(es, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
+		}
+		fmt.Println("return 2")
+		return nil, WrapError(nil, resErr.Code, resErr.Message)
+	}
+
 	respData := data
 	if len(respData) > 10000 {
 		respData = respData[:5000]
@@ -104,16 +115,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	if c.Debug == true {
 		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
-	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
-		var resErr *Error
-		es := json.Unmarshal(respData, &resErr)
-		if es != nil || resErr == nil {
-			fmt.Println("return 1")
-			return nil, WrapError(es, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
-		}
-		fmt.Println("return 2")
-		return nil, WrapError(nil, resErr.Code, resErr.Message)
-	}
+
 	return data, nil
 }
 
