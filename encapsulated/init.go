@@ -142,3 +142,51 @@ func (c *EncapsulatedConfig) encodeRequest(reqBody interface{}) []byte {
 	//buf.Write(c.cachedFields[1:])
 	return buf.Bytes()
 }
+
+func (c *EncapsulatedConfig) RequestWithHeaer(ctx echo.Context, method string, path string, reqBody interface{}, header []string) ([]byte, error) {
+	t0 := time.Now()
+	reqData := c.encodeRequest(reqBody)
+	req, err := http.NewRequest(method, c.BaseURI+path, bytes.NewBuffer(reqData))
+	if err != nil {
+		logger.Panic(err)
+		return nil, WrapError(err, CodeInternal, "Internal error")
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
+	for _, h := range header {
+		req.Header.Add(h, ctx.Request().Header.Get(h))
+	}
+
+	httpResp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, WrapError(err, CodeNetWork, "Network error")
+	}
+
+	// Decode response
+	data, err := ioutil.ReadAll(httpResp.Body)
+	if err != nil {
+		return nil, WrapError(err, CodeNetWork, "Network error, unable to read body")
+	}
+
+	respData := data
+	if len(respData) > 10000 {
+		respData = respData[:5000]
+	}
+	t1 := time.Now()
+	if c.Debug == true {
+		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+	}
+	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
+		var resErr *Error
+		es := json.Unmarshal(data, &resErr)
+		if es != nil || resErr == nil {
+
+			return nil, WrapError(es, strconv.Itoa(httpResp.StatusCode), "Unmarshal response")
+		}
+
+		return nil, WrapErrorf(resErr.Code, resErr.Message)
+	}
+	return data, nil
+}
