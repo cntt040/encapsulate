@@ -103,7 +103,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+		logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
