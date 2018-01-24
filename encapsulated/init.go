@@ -63,8 +63,8 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 			"url":     c.BaseURI + path,
 			"code":    httpResp.StatusCode,
 			"latency": t1.Sub(t0),
-			"req":     reqData,
-			"res":     respData,
+			"req":     string(reqData),
+			"res":     string(respData),
 		}).Info("Log request")
 		//logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
@@ -114,8 +114,8 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 			"url":     c.BaseURI + path,
 			"code":    httpResp.StatusCode,
 			"latency": t1.Sub(t0),
-			"req":     reqData,
-			"res":     respData,
+			"req":     string(reqData),
+			"res":     string(respData),
 		}).Info("Log request")
 		//logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
@@ -194,8 +194,8 @@ func (c *EncapsulatedConfig) RequestWithHeaer(ctx echo.Context, method string, p
 			"url":     c.BaseURI + path,
 			"code":    httpResp.StatusCode,
 			"latency": t1.Sub(t0),
-			"req":     reqData,
-			"res":     respData,
+			"req":     string(reqData),
+			"res":     string(respData),
 		}).Info("Log request")
 		//logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
