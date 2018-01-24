@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
+	logger "github.com/sirupsen/logrus"
 )
 
 type EncapsulatedConfig struct {
@@ -19,9 +20,9 @@ type EncapsulatedConfig struct {
 
 var DefaultConfig *EncapsulatedConfig
 
-var logger = GetLoggerHTTP("Encapsulated Services ")
-
 func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+
 	def := &EncapsulatedConfig{
 		BaseURI:    "",
 		httpClient: http.DefaultClient,
@@ -39,7 +40,6 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 		return nil, WrapError(err, CodeInternal, "Internal error")
 	}
 
-	//req = req.WithContext(ctx)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("cache-control", "no-cache")
 	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
@@ -54,12 +54,19 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	}
 
 	respData := data
-	if len(respData) > 10000 {
-		respData = respData[:5000]
+	if len(respData) > 1000 {
+		respData = respData[:1000]
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
+		logger.WithFields(logger.Fields{
+			"url":     c.BaseURI + path,
+			"code":    httpResp.StatusCode,
+			"latency": t1.Sub(t0),
+			"req":     reqData,
+			"res":     respData,
+		}).Info("Log request")
+		//logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
@@ -98,12 +105,19 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	}
 
 	respData := data
-	if len(respData) > 10000 {
-		respData = respData[:5000]
+	if len(respData) > 1000 {
+		respData = respData[:1000]
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
+		logger.WithFields(logger.Fields{
+			"url":     c.BaseURI + path,
+			"code":    httpResp.StatusCode,
+			"latency": t1.Sub(t0),
+			"req":     reqData,
+			"res":     respData,
+		}).Info("Log request")
+		//logger.Infof("-> %s, st=%d, latency=%s,req=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
@@ -171,12 +185,19 @@ func (c *EncapsulatedConfig) RequestWithHeaer(ctx echo.Context, method string, p
 	}
 
 	respData := data
-	if len(respData) > 10000 {
-		respData = respData[:5000]
+	if len(respData) > 1000 {
+		respData = respData[:1000]
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+		logger.WithFields(logger.Fields{
+			"url":     c.BaseURI + path,
+			"code":    httpResp.StatusCode,
+			"latency": t1.Sub(t0),
+			"req":     reqData,
+			"res":     respData,
+		}).Info("Log request")
+		//logger.Infof("-> %s, st=%d, latency=%s, resp=%s", c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
