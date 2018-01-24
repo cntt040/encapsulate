@@ -21,7 +21,7 @@ type EncapsulatedConfig struct {
 var DefaultConfig *EncapsulatedConfig
 
 func init() {
-	logger.SetFormatter(&log.JSONFormatter{})
+	logger.SetFormatter(&logger.JSONFormatter{})
 
 	def := &EncapsulatedConfig{
 		BaseURI:    "",
