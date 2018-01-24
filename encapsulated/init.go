@@ -59,7 +59,13 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Infof(`"url":"%s", "st":%d, "latency":"%s","req":"%s", "resp":"%s"`, c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
+		log.Info(DataLog{
+			Url:    c.BaseURI + path,
+			Status: httpResp.StatusCode,
+			St:     t1.Sub(t0),
+			Req:    string(reqData),
+			Res:    string(respData),
+		})
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
@@ -103,7 +109,13 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Infof(`"url":"%s", "st":%d, "latency":"%s","req":"%s", "resp":"%s"`, c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(reqData), string(respData))
+		log.Info(DataLog{
+			Url:    c.BaseURI + path,
+			Status: httpResp.StatusCode,
+			St:     t1.Sub(t0),
+			Req:    string(reqData),
+			Res:    string(respData),
+		})
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error
@@ -176,7 +188,13 @@ func (c *EncapsulatedConfig) RequestWithHeaer(ctx echo.Context, method string, p
 	}
 	t1 := time.Now()
 	if c.Debug == true {
-		logger.Info(c.BaseURI+path, httpResp.StatusCode, t1.Sub(t0), string(respData))
+		log.Info(DataLog{
+			Url:    c.BaseURI + path,
+			Status: httpResp.StatusCode,
+			St:     t1.Sub(t0),
+			Req:    "",
+			Res:    string(respData),
+		})
 	}
 	if httpResp.StatusCode >= 300 || httpResp.StatusCode < 200 {
 		var resErr *Error

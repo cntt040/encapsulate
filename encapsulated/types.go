@@ -1,6 +1,9 @@
 package encapsulated
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 const (
 	CodeInternal = "500"
@@ -46,4 +49,12 @@ func WrapErrorf(code string, msg string, args ...interface{}) error {
 
 type Response interface {
 	GetError() error
+}
+
+type DataLog struct {
+	Url    string
+	Status int
+	St     time.Duration
+	Req    string
+	Res    string
 }
