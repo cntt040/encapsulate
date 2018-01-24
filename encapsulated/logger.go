@@ -31,11 +31,11 @@ func GetLogger(module string) *logging.Logger {
 
 func GetLoggerHTTP(module string) *logging.Logger {
 	log = logging.MustGetLogger(module)
-	// var format = logging.MustStringFormatter(
-	// 	`{"time":"%{time:15:04:05.000}","message":{%{message}}}`,
-	// )
-	logBackend := logging.NewLogBackend(os.Stdout, "", 0)
-	logBackendFormatter := logging.NewBackendFormatter(logBackend, logging.DefaultFormatter)
+	var format = logging.MustStringFormatter(
+		`%{color}%{time:15:04:05.000}%{color:reset} %{message}`,
+	)
+	logBackend := logging.NewLogBackend(os.Stdout, "*", 0)
+	logBackendFormatter := logging.NewBackendFormatter(logBackend, format)
 	logging.SetBackend(logBackendFormatter)
 	logging.SetLevel(logging.INFO, "")
 	return log
