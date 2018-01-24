@@ -62,7 +62,7 @@ func (c *EncapsulatedConfig) RequestWithoutJson(ctx echo.Context, method string,
 		logger.WithFields(logger.Fields{
 			"url":     c.BaseURI + path,
 			"code":    httpResp.StatusCode,
-			"latency": t1.Sub(t0),
+			"latency": t1.Sub(t0).Seconds(),
 			"req":     string(reqData),
 			"res":     string(respData),
 		}).Info("Log request")
@@ -113,7 +113,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 		logger.WithFields(logger.Fields{
 			"url":     c.BaseURI + path,
 			"code":    httpResp.StatusCode,
-			"latency": t1.Sub(t0),
+			"latency": t1.Sub(t0).Seconds(),
 			"req":     string(reqData),
 			"res":     string(respData),
 		}).Info("Log request")
@@ -193,7 +193,7 @@ func (c *EncapsulatedConfig) RequestWithHeaer(ctx echo.Context, method string, p
 		logger.WithFields(logger.Fields{
 			"url":     c.BaseURI + path,
 			"code":    httpResp.StatusCode,
-			"latency": t1.Sub(t0),
+			"latency": t1.Sub(t0).Seconds(),
 			"req":     string(reqData),
 			"res":     string(respData),
 		}).Info("Log request")
