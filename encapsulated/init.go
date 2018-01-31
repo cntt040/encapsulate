@@ -95,6 +95,7 @@ func (c *EncapsulatedConfig) Request(ctx echo.Context, method string, path strin
 	req.Header.Add("Authorization", ctx.Request().Header.Get("Authorization"))
 	httpResp, err := c.httpClient.Do(req)
 	if err != nil {
+		logger.Error(err)
 		return nil, WrapError(err, CodeNetWork, "Network error")
 	}
 
